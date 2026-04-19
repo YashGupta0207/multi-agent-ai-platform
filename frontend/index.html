@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Agent Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+  <!-- Ambient background -->
+  <div class="bg-grid"></div>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-mark">&#9672;</span>
+        <span class="logo-text">AI Agent Hub</span>
+      </div>
+      <div class="header-model-badge">
+        <span class="model-dot"></span>
+        <span class="model-label">GPT-4o Mini</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Built-in Agent Selector -->
+    <section class="agent-selector">
+      <p class="selector-label">Built-in Agents</p>
+      <div class="agent-tabs" role="tablist">
+        <button class="agent-tab active" data-agent="summarizer" role="tab" aria-selected="true">
+          <span class="tab-icon">&#10227;</span>
+          <span class="tab-name">Summarizer</span>
+          <span class="tab-desc">Condense any text</span>
+        </button>
+        <button class="agent-tab" data-agent="email" role="tab" aria-selected="false">
+          <span class="tab-icon">&#9993;</span>
+          <span class="tab-name">Email Writer</span>
+          <span class="tab-desc">Craft professional emails</span>
+        </button>
+        <button class="agent-tab" data-agent="translator" role="tab" aria-selected="false">
+          <span class="tab-icon">&#8644;</span>
+          <span class="tab-name">Translator</span>
+          <span class="tab-desc">Translate any language</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Custom Agents Section -->
+    <section class="custom-section" id="customSection">
+      <div class="custom-section-header">
+        <p class="selector-label" style="margin:0">Custom Agents</p>
+        <button class="create-agent-btn" id="openModalBtn">
+          <span class="create-plus">+</span>
+          <span>Create Agent</span>
+        </button>
+      </div>
+
+      <!-- Empty state -->
+      <div class="custom-empty" id="customEmpty">
+        <div class="empty-icon">&#9684;</div>
+        <p class="empty-title">No custom agents yet</p>
+        <p class="empty-sub">Create your own AI agent with a custom system prompt</p>
+      </div>
+
+      <!-- Custom agent tabs (populated by JS) -->
+      <div class="custom-agent-tabs" id="customAgentTabs" style="display:none"></div>
+    </section>
+
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="modal" id="agentModal" role="dialog" aria-modal="true">
+        <div class="modal-header">
+          <h2 class="modal-title" id="modalTitle">Create Custom Agent</h2>
+          <button class="modal-close" id="modalClose" title="Close">&#10005;</button>
+        </div>
+        <div class="modal-body">
+
+          <div class="modal-row">
+            <!-- Icon -->
+            <div class="field-group field-group--sm">
+              <label class="modal-label" for="customAgentIcon">Icon</label>
+              <input type="text" id="customAgentIcon" class="modal-input modal-input--icon" placeholder="&#129302;"
+                maxlength="2" />
+            </div>
+            <!-- Name -->
+            <div class="field-group" style="flex:1">
+              <label class="modal-label" for="customAgentName">Agent Name <span class="required">*</span></label>
+              <input type="text" id="customAgentName" class="modal-input" placeholder="e.g. Code Reviewer, Blog Writer"
+                maxlength="32" />
+            </div>
+          </div>
+
+          <!-- Emoji presets -->
+          <div class="emoji-presets">
+            <button class="emoji-btn" data-emoji="&#129302;">&#129302;</button>
+            <button class="emoji-btn" data-emoji="&#9997;">&#9997;</button>
+            <button class="emoji-btn" data-emoji="&#128269;">&#128269;</button>
+            <button class="emoji-btn" data-emoji="&#128161;">&#128161;</button>
+            <button class="emoji-btn" data-emoji="&#128300;">&#128300;</button>
+            <button class="emoji-btn" data-emoji="&#128202;">&#128202;</button>
+            <button class="emoji-btn" data-emoji="&#127912;">&#127912;</button>
+            <button class="emoji-btn" data-emoji="&#9889;">&#9889;</button>
+            <button class="emoji-btn" data-emoji="&#128640;">&#128640;</button>
+            <button class="emoji-btn" data-emoji="&#129504;">&#129504;</button>
+          </div>
+
+          <div class="field-group">
+            <label class="modal-label" for="customAgentDesc">Short Description <span class="required">*</span></label>
+            <input type="text" id="customAgentDesc" class="modal-input"
+              placeholder="e.g. Reviews code for bugs and improvements" maxlength="60" />
+          </div>
+
+          <div class="field-group">
+            <label class="modal-label" for="customAgentPrompt">
+              System Prompt <span class="required">*</span>
+              <span class="label-hint">Tell the AI who it is and how to respond</span>
+            </label>
+            <textarea id="customAgentPrompt" class="modal-textarea"
+              placeholder="You are an expert code reviewer. Analyze the given code and provide:&#10;- A brief summary of what the code does&#10;- Any bugs or issues found&#10;- Suggestions for improvement&#10;- Best practices to follow&#10;&#10;Be concise, specific, and constructive."></textarea>
+            <div class="prompt-tips">
+              <span class="tip-label">Tips:</span>
+              Start with "You are a..." · Specify output format · Keep it focused
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button class="btn-cancel" id="modalCancel">Cancel</button>
+            <button class="btn-save" id="modalSave">
+              <span id="modalSaveLabel">Save Agent</span>
+              <span>&#8594;</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Workspace -->
+    <section class="workspace">
+
+      <!-- Active agent badge -->
+      <div class="active-badge">
+        <span class="badge-dot"></span>
+        <span class="badge-label" id="activeBadgeLabel">Text Summarizer</span>
+      </div>
+
+      <!-- Input panel -->
+      <div class="panel input-panel">
+        <div class="panel-header">
+          <span class="panel-title">Input</span>
+          <button class="panel-action" id="clearBtn" title="Clear input">&#10005; Clear</button>
+        </div>
+
+        <!-- Translator-only: language selector -->
+        <div class="translator-options" id="translatorOptions" style="display:none">
+          <label class="field-label" for="targetLang">Translate to</label>
+          <div class="select-wrap">
+            <select id="targetLang" class="lang-select">
+              <option value="French">French</option>
+              <option value="Spanish">Spanish</option>
+              <option value="German">German</option>
+              <option value="Italian">Italian</option>
+              <option value="Portuguese">Portuguese</option>
+              <option value="Japanese">Japanese</option>
+              <option value="Korean">Korean</option>
+              <option value="Chinese (Simplified)">Chinese (Simplified)</option>
+              <option value="Arabic">Arabic</option>
+              <option value="Hindi">Hindi</option>
+              <option value="Russian">Russian</option>
+              <option value="Dutch">Dutch</option>
+              <option value="Turkish">Turkish</option>
+              <option value="Polish">Polish</option>
+              <option value="Swedish">Swedish</option>
+            </select>
+            <span class="select-arrow">&#9662;</span>
+          </div>
+        </div>
+
+        <textarea id="userInput" class="input-textarea" placeholder="Paste or type your text here..."
+          spellcheck="false"></textarea>
+
+        <div class="input-footer">
+          <span class="char-count" id="charCount">0 characters</span>
+          <button class="run-btn" id="runBtn">
+            <span class="run-label">Run Agent</span>
+            <span class="run-arrow">&#8594;</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Output panel -->
+      <div class="panel output-panel">
+        <div class="panel-header">
+          <span class="panel-title">Output</span>
+          <button class="panel-action" id="copyBtn" title="Copy output" style="display:none">&#9006; Copy</button>
+        </div>
+
+        <div class="output-idle" id="outputIdle">
+          <div class="idle-icon">&#9672;</div>
+          <p class="idle-text">Your output will appear here</p>
+        </div>
+
+        <div class="output-loading" id="outputLoading" style="display:none">
+          <div class="spinner">
+            <div class="spinner-ring"></div>
+            <span class="spinner-label" id="spinnerLabel">Processing...</span>
+          </div>
+        </div>
+
+        <div class="output-error" id="outputError" style="display:none">
+          <span class="error-icon">&#9888;</span>
+          <p class="error-msg" id="errorMsg">Something went wrong.</p>
+          <button class="retry-btn" id="retryBtn">Try again</button>
+        </div>
+
+        <div class="output-result" id="outputResult" style="display:none">
+          <div class="result-text" id="resultText"></div>
+          <div class="result-meta">
+            <span class="meta-model" id="metaModel"></span>
+            <span class="meta-time" id="metaTime"></span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <span>Powered by <strong>OpenRouter</strong> &middot; LangChain-style prompt templates</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
