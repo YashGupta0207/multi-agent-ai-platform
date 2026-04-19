@@ -320,7 +320,7 @@ def run_demo():
     print(f"\n{SEP}\nAll agents completed successfully.\n{SEP}\n")
 
 
-    if __name__ == "__main__":
-        while True:
-            run_demo()
-            time.sleep(60)
+if __name__ == "__main__":
+    while True:
+        run_demo()
+        time.sleep(60)
