@@ -50,7 +50,7 @@ class SummarizerAgent:
     """Summarizes text into structured bullet points."""
 
     prompt = ChatPromptTemplate.from_messages([
-        SystemMessage(content=
+        ("system",
             "You are a professional text summarizer with expertise in extracting key insights.\n"
             "Your job is to summarize the given text in a concise, clear, and structured way.\n\n"
             "Rules:\n"
@@ -60,7 +60,7 @@ class SummarizerAgent:
             "- Keep language simple and direct\n"
             "- Do not include your own opinions"
         ),
-        HumanMessage(content=
+        ("human",
             "Please summarize the following text:\n\n{text}"
         ),
     ])
@@ -83,7 +83,7 @@ class EmailWriterAgent:
     """Writes professional emails from rough notes."""
 
     prompt = ChatPromptTemplate.from_messages([
-        SystemMessage(content=
+        ("system",
             "You are an expert professional email writer.\n"
             "Write a polished, well-structured email based on the user's notes or topic.\n\n"
             "Always follow this format:\n"
@@ -96,7 +96,7 @@ class EmailWriterAgent:
             "[Your Name]\n\n"
             "Keep the tone professional yet warm. Be concise."
         ),
-        HumanMessage(content=
+        ("human",
             "Write a professional email based on these notes:\n\n{text}"
         ),
     ])
@@ -119,7 +119,7 @@ class TranslatorAgent:
     """Translates text into any target language."""
 
     prompt = ChatPromptTemplate.from_messages([
-        SystemMessage(content=
+        ("system",
             "You are an expert language translator with native-level fluency in all major languages.\n"
             "Translate the given text accurately into {target_language}.\n\n"
             "Rules:\n"
@@ -128,7 +128,7 @@ class TranslatorAgent:
             "- If the text contains technical terms, translate them appropriately\n"
             "- Output ONLY the translated text, nothing else"
         ),
-        HumanMessage(content=   
+        ("human",   
             "Translate the following text into {target_language}:\n\n{text}"
         ),
     ])
@@ -171,8 +171,8 @@ class CustomAgent:
 
         # Build a dynamic ChatPromptTemplate from the user-provided system prompt
         self.prompt = ChatPromptTemplate.from_messages([
-            SystemMessage(content="{system_prompt}"),
-            HumanMessage(content="{text}"),
+            ("system", "{system_prompt}"),
+            ("human", "{text}"),
         ])
         self.chain = self.prompt | llm | output_parser
 
