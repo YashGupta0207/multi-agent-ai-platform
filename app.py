@@ -1,9 +1,10 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from agents import SummarizerAgent, EmailWriterAgent, TranslatorAgent
 import os
 
 app = Flask(__name__)
-
+CORS(app)
 @app.route("/")
 def home():
     return "AI Agent Hub is running 🚀"
